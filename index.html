@@ -10,6 +10,14 @@
 
   <script src="js/controller.js"></script>
 
+  <script src="js/jquery.easy-autocomplete.min.js"></script> 
+
+  <!-- CSS file -->
+  <link rel="stylesheet" href="js/easy-autocomplete.min.css"> 
+
+  <!-- Additional CSS Themes file - not required-->
+  <link rel="stylesheet" href="js/easy-autocomplete.themes.min.css"> 
+
 
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -39,6 +47,22 @@
 
   /* The real magic ;) */
   </style>
+
+<script>
+
+  $(document).ready(function() {
+    var options = {
+      url: function() {
+        return "http://192.168.0.1/leno/lista.php";
+      },
+
+        getValue: "name"
+    };
+
+    $("#provider-remote").easyAutocomplete(options);
+  });
+
+</script>
   <title>Vendas</title>
 </head>
 <body>
@@ -80,7 +104,7 @@
       <label style="margin-top: 7px; margin-left: 12px; "> X </label>
     </div>
     <div class="input-group col-lg-9 col-sm-9 col-md-9 col-xs-8">
-      <input type="text" class="form-control" ng-model="inputitem.index" placeholder="Nome ou código do produto">
+      <input id="#provider-remote" class="form-control" ng-model="inputitem.index" placeholder="Procure o produto">
       <span id="spanAdicionar"class="input-group-btn disableicon">
         <button id="Adicionar" class="btn btn-secondary disable" type="button" ng-click="addList()">Adicionar</button>
       </span>

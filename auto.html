@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lets try autocomplete w/ autocomplete.js</title>
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<!-- JS file -->
+<script src="js/jquery.easy-autocomplete.min.js"></script> 
+
+<!-- CSS file -->
+<link rel="stylesheet" href="js/easy-autocomplete.min.css"> 
+
+<!-- Additional CSS Themes file - not required-->
+<link rel="stylesheet" href="js/easy-autocomplete.themes.min.css"> 
+
+<script>
+
+	$(document).ready(function() {
+		var options = {
+			url: "countries.json",
+
+			getValue: "name",
+
+			list: {
+				match: {
+					enabled: true
+				}
+			}
+		};
+
+		$("#provider-json").easyAutocomplete(options);
+	});
+	</script>
+
+
+</head>
+
+<body>
+
+
+<input id="provider-json" class="form-control" placeholder="Type something..."/>
+				
+   
+</body>
+
+</html>
