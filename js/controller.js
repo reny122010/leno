@@ -1,10 +1,31 @@
 var appHashtag = angular.module("appLeno", []);
+var value;
+
+$(document).ready(function() {
+    var options = {
+    	url: "listProdutos.json",
+      	listLocation: "produtos",
+      	getValue: "nome",
+
+        list: {
+          	onSelectItemEvent: function() {
+            		value = $("#provider-json").getSelectedItemData().Idproduto;
+            }, 
+            match: {
+          		enabled: true
+        	}
+        }
+    };
+    $("#provider-json").easyAutocomplete(options);
+});
 
 appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope, $http,$window){
 
-$scope.venda = {nome:"Não definido", numero:"Não definido", itens:0, total:0.00};
-$scope.status = {now: "Escolha o cliente!"}
-	var endereco  = "http://192.168.0.102";
+	$scope.venda = {nome:"Não definido", numero:"Não definido", itens:0, total:0.00};
+	$scope.status = {now: "Escolha o cliente!"};
+	var endereco  = "http://10.0.0.3/sisstc";
+
+	document.getElementById("qnt").value = "1";
 
 
 	var disableComponentes = function(input){
@@ -113,8 +134,9 @@ $scope.status = {now: "Escolha o cliente!"}
 
 
     $scope.addList = function(){
+
 		$http.get(endereco+"/inserirProdutoCompra.php?idcompra="+$scope.venda.numero+"&idproduto="
-			+$scope.inputitem.index+"&quantidade="+$scope.inputitem.qnt).success(function(response){
+			+value+"&quantidade="+$scope.inputitem.qnt).success(function(response){
 				if(response.retorno == 0){
 					addItem(response.valor);
 					vendaList();
@@ -127,7 +149,7 @@ $scope.status = {now: "Escolha o cliente!"}
 				}if (response.retorno == 3){
 					disableComponentes(5);
 				}
-				
+				document.getElementById("provider-json").value = "";
 				console.log(response);
     	});
 	}
@@ -171,5 +193,6 @@ $scope.status = {now: "Escolha o cliente!"}
     }
 
 	clientList();
+	produtoList();
 }]);
     

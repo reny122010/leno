@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="appLeno">
+<head>
+  <meta charset="UTF-8">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+  <script src="js/controller.js"></script>
+
+ <script src="js/jquery.easy-autocomplete.min.js"></script> 
+
+<!-- CSS file -->
+<link rel="stylesheet" href="js/easy-autocomplete.min.css"> 
+
+<!-- Additional CSS Themes file - not required-->
+<link rel="stylesheet" href="js/easy-autocomplete.themes.min.css"> 
+
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+  <style type="text/css">
+  .btnMenu{
+    display: block;
+    height: 50px;
+    width: auto;
+  }
+  .btnMargin{
+    margin-bottom: 40px;
+  }
+
+  .disableicon{
+   cursor: not-allowed; 
+  }
+  .disable{
+    pointer-events: none;
+  }
+  .ajusteMenu ul{
+      margin-top: 35px;
+  }
+
+  /* The real magic ;) */
+  </style>
+  <title>Vendas</title>
+</head>
+<body>
+<div ng-controller="lenoCtrl">
+
+  <nav class="navbar navbar-default navbar-fixed-top ">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <label>Leno Motos</label>
+      </a>
+    </div>
+    <ul class="nav navbar-nav ">
+        <li id="liLimparVenda" class="disableicon"><a id="aLimparVenda" class="disable" href="#" ng-click ="limparVenda()">Limpar Venda (F2)</a></li>
+        <li id="liCancelarVenda" class="disableicon"><a id="aCancelarVenda" class="disable" href="#" ng-click ="cancelarVenda()">Cancelar Venda (F4)</a></li>
+        <li class="dropdown" id="liEscolherCliente">
+          <a href="#" id="aEscolherCliente" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Escolher Cliente (F7) <span class="caret"></span></a>
+          <ul class="dropdown-menu" >
+            <li ng-repeat="client in listofClient.clientes"><a href ng-click ="initCompra(client.cpf, client.nome)">{{client.nome}}</a></li>
+          </ul>
+        </li>
+    </ul>
+    <div class="navbar-right">
+      <a class="navbar-brand">
+       <span class="label label-danger">{{status.now}}</span>
+      </a>
+    </div>
+    
+  </div>
+</nav>
+
+<div class="container" style="margin-top: 70px;">
+  <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+  <div class="row ">
+    <div class="col-lg-2 col-sm-2 col-md-2 col-xs-3">
+      <input type="text" id="qnt" class="form-control" ng-model="inputitem.qnt" placeholder="QNT">
+    </div>
+    <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+      <label style="margin-top: 7px; margin-left: 12px; "> X </label>
+    </div>
+    <div class="input-group col-lg-9 col-sm-9 col-md-9 col-xs-8 ajusteMenu">
+    <input id="provider-json" class="form-control" ng-model="inputitem.index" placeholder="Procure o produto..."/>
+      <span id="spanAdicionar"class="input-group-btn disableicon">
+        <button id="Adicionar" class="btn btn-secondary disable" type="button" ng-click="addList()">Adicionar</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>         
+          <th>Código</th>
+          <th>Modelo</th>
+          <th>Unidade</th>
+          <th>Quantidade</th>
+          <th>Valor da quantidade</th>
+          <th>Valor total</th>
+          <th>Excluir</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in itensList.vendas">
+            <td>{{item.idvenda}}</td>
+            <td>{{item.codigobarras}}</td>
+            <td>{{item.nome}}</td>
+            <td>{{item.unidade}}</td>
+            <td>{{item.quantidade}}</td>
+            <td>R$ {{item.valor}}</td>
+            <td>R$ {{item.valortotal}}</td>
+            <td><button class="btn btn-danger" ng-click="removeList(item.idvenda,item.valortotal )">X</button></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+  </div>
+  <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3" style="position: fixed; top: 70px; right: 2%;">
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+          <label>Cliente: {{venda.nome}}</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <label >Nº da venda: {{venda.numero}}</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <label >Itens: {{venda.itens}}</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <label style="font-size: 30px;">Total: R$ {{venda.total}}</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 disableicon"id="divVender">
+        <button id="btnVender" ng-click ="vender()" class="btn btn-success btnMenu disable">Vender</button>
+      </div>
+    </div>
+    
+  </div>
+
+  
+</div>
+</div>
+
+</body>
+</html>
