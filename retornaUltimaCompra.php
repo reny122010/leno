@@ -12,11 +12,11 @@ if ($conn->connect_error) {
 else
 {
 	
-	if($stmt = $conn->prepare("SELECT cpfcliente,idcompra FROM tbcompra  where data is null limit 1")) 
+	if($stmt = $conn->prepare("SELECT CA.cpfcliente as cpfcliente,CA.idcompra as idcompra, CL.nome as nome FROM tbcompra as CA inner join tbcliente  as CL on CL.cpf = CA.cpfcliente  and CA.data is null limit 1")) 
 	{
 			$stmt->execute(); 
 			
-			$stmt->bind_result($cpfcliente,$idcompra);
+			$stmt->bind_result($cpfcliente,$idcompra,$nome);
 			if (!$stmt->fetch())
 			{
 					
@@ -25,7 +25,7 @@ else
 			else
 			{
 
-				echo json_encode( array('retorno' => 1, 'cpfcliente' => $cpfcliente, 'idcompra' => $idcompra));	
+				echo json_encode( array('retorno' => 1, 'cpfcliente' => $cpfcliente, 'idcompra' => $idcompra,'nome' => $nome ));	
 			}
 			$stmt->close();
 	}

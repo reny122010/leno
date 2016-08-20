@@ -7,6 +7,8 @@ class A {
 
     public $vendas = array(); 
 }
+
+
 		
 		$idcompra = $_GET["idcompra"];
 		$venda = new A;
@@ -21,6 +23,17 @@ class A {
 			array_push($venda->vendas, new B($consulta["idvenda"],$consulta["codigobarras"],utf8_encode($consulta["nome"]),$consulta["unidade"],$consulta["quantidade"],$consulta["valor"],$consulta["valortotal"]));
 		   // print "Coluna1: $consulta[cpf] - Coluna2: $consulta[nome]<br>"; 
 		} 
+
+
+ 
+        $conecta = mysql_connect($server, $user, $pass) or print (mysql_error()); 
+        mysql_select_db($db, $conecta) or print(mysql_error()); 
+        $sql = "SELECT sum(valor) as total, count(idcompra) as quantidadeItens from tbprodutosparacompra where idcompra = ".$idcompra;
+        $result = mysql_query($sql, $conecta); 
+        while($consulta = mysql_fetch_array($result)) { 
+        $quantidadeItens = $consulta["quantidadeItens"];
+        $total = $consulta["total"];
+        }
 
 		mysql_free_result($result); 
 		mysql_close($conecta); 
@@ -48,5 +61,5 @@ class B {
      }
 } 
 
-echo json_encode($venda); 
+echo json_encode(array('vendas'=>$venda ,'quantidadeItens'=>$quantidadeItens,'total'=>$total) ); 
 ?> 

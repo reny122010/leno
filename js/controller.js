@@ -23,7 +23,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 
 	$scope.venda = {nome:"Não definido", numero:"Não definido", itens:0, total:0.00};
 	$scope.status = {now: "Escolha o cliente!"};
-	var endereco  = "http://10.0.0.3/sisstc";
+	var endereco  = "http://localhost/sisstc";
 
 	document.getElementById("qnt").value = "1";
 
@@ -80,7 +80,27 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 		}
 	}
 
+	var vendaList = function(){
+		$http.get(endereco+"/listCompra.php?idcompra="+$scope.venda.numero).success(function(response){
+	    	$scope.itensList = response.vendas;
+	    	$scope.venda.itens = response.quantidadeItens;
+	    	$scope.venda.total = response.total;
+	    	console.log(response);
+	    });	
+    };
 
+	var returnVenda = function(){
+		$http.get(endereco+"/retornaUltimaCompra.php").success(function(response){
+	    	if(response.retorno == 1){
+	    		$scope.venda.numero = response.idcompra;
+	    		$scope.venda.nome = response.nome;
+	    		vendaList();
+	    		disableComponentes(3);
+	    	}else{
+	    		clientList();
+	    	}
+	    });	
+	}
 
 	var produtoList = function(){
 		$http.get(endereco+"/listProdutos.php").success(function(response){
@@ -88,12 +108,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 	    });	
     };
 
-    var vendaList = function(){
-		$http.get(endereco+"/listCompra.php?idcompra="+$scope.venda.numero).success(function(response){
-	    	$scope.itensList = response;
-	    	console.log(response);
-	    });	
-    };
+    
 
     var clientList = function(){
 		$http.get(endereco+"/listClientes.php").success(function(response){
@@ -115,18 +130,13 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
     	});
     }
     $scope.itensList = "";
-    var addItem = function(valor){
+    var addItem = function(){
     	if($scope.venda.itens == 0){
     		disableComponentes(3);
-    	}
-    	$scope.venda.itens = $scope.venda.itens+1;
-    	$scope.venda.total = $scope.venda.total+valor;
-    	
+    	}    	
     }
 
-    var removeItem = function(valor){
-    	$scope.venda.itens = $scope.venda.itens-1;
-    	$scope.venda.total = $scope.venda.total-valor;
+    var removeItem = function(){
     	if($scope.venda.itens == 0){
     		disableComponentes(2);
     	}
@@ -138,7 +148,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 		$http.get(endereco+"/inserirProdutoCompra.php?idcompra="+$scope.venda.numero+"&idproduto="
 			+value+"&quantidade="+$scope.inputitem.qnt).success(function(response){
 				if(response.retorno == 0){
-					addItem(response.valor);
+					addItem();
 					vendaList();
 				}
 				if(response.retorno == 1){
@@ -156,7 +166,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 
 	$scope.removeList = function(id, valor){
 		$http.get(endereco+"/removerItem.php?idvenda="+id).success(function(response){
-				removeItem(valor);
+				removeItem();
 				vendaList();
 				console.log(response);
     	});
@@ -168,6 +178,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 			console.log(response);
 			$scope.venda = {nome:"Não definido", numero:"Não definido", itens:0, total:0.00};
 			vendaList();
+			returnVenda();
 			disableComponentes(1);
     	});
 	}
@@ -184,7 +195,8 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
 
 	$scope.vender = function(){
 		$http.get(endereco+"/finalizarVenda.php?idcompra="+$scope.venda.numero).success(function(response){
-			$window.location.reload();
+			disableComponentes(1);
+			returnVenda();
     	});
 	}
 
@@ -192,7 +204,7 @@ appHashtag.controller("lenoCtrl", ['$scope', '$http', '$window',function($scope,
     	$scope.toggleText = valor;
     }
 
-	clientList();
+	returnVenda();
 	produtoList();
 }]);
     

@@ -17,7 +17,7 @@ require_once("verysimple/HTTP/RequestUtil.php");
 /** database connection settings */
 GlobalConfig::$CONNECTION_SETTING = new ConnectionSetting();
 GlobalConfig::$CONNECTION_SETTING->ConnectionString = "127.0.0.1";
-GlobalConfig::$CONNECTION_SETTING->DBName = "test";
+GlobalConfig::$CONNECTION_SETTING->DBName = "sisstc";
 GlobalConfig::$CONNECTION_SETTING->Username = "stchost";
 GlobalConfig::$CONNECTION_SETTING->Password = "os@Ruam08@";
 GlobalConfig::$CONNECTION_SETTING->Type = "MySQL";
